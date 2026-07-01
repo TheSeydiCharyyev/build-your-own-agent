@@ -13,7 +13,7 @@
 
 ---
 
-> 🚧 **v1 in progress.** All three flagship reference implementations shipped and runnable — §5 MCP server+client, §6 coding agent, §7 token-accounting (each `node`-runnable, zero deps). Curation done for §1/§2/§4/§8; the rest is landing. Watch/star to follow.
+> **v1 landing.** Every section curated with fetch-verified links (except §7 token-accounting — almost nothing exists from scratch, so it's our own code). Three flagship reference implementations shipped and runnable — §5 MCP server+client, §6 coding agent, §7 token-accounting (each `node`-runnable, zero deps). Next: reference impls for the remaining sections. Watch/star to follow.
 
 ## Why this exists
 
@@ -35,14 +35,14 @@ There are already excellent **from-scratch courses** — one author, one linear 
 |---|-----------|---------|----------------|
 | 1 | [The agent loop](#1-the-agent-loop) | ✅ | link |
 | 2 | [Tool / function calling](#2-tool--function-calling) | ✅ | link |
-| 3 | [Memory](#3-memory) | 🔗 | link |
+| 3 | [Memory](#3-memory) | ✅ | link |
 | 4 | [RAG](#4-rag) | ✅ | link |
-| 5 | [MCP server + client](#5-mcp-server--client) | 🔗 | ⭐ [code](reference/05-mcp-server-client/) |
-| 6 | [Coding agent](#6-coding-agent) | 🔗 | ⭐ [code](reference/06-coding-agent/) |
-| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | 🔗 | ⭐ [code](reference/07-token-accounting/) |
+| 5 | [MCP server + client](#5-mcp-server--client) | ✅ | ⭐ [code](reference/05-mcp-server-client/) |
+| 6 | [Coding agent](#6-coding-agent) | ✅ | ⭐ [code](reference/06-coding-agent/) |
+| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | — | ⭐ [code](reference/07-token-accounting/) |
 | 8 | [Evals](#8-evals) | ✅ | link |
-| 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | 🔗 | link |
-| 10 | [Guardrails & human-in-the-loop](#10-guardrails--human-in-the-loop) | 🔗 | link |
+| 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | ✅ | link |
+| 10 | [Guardrails & human-in-the-loop](#10-guardrails--human-in-the-loop) | ✅ | link |
 
 ⭐ = original reference implementation written for this repo.
 
@@ -74,7 +74,10 @@ How a model asks to run code and gets the result back: schema, dispatch, result 
 
 Short-term (context management, compaction) and long-term (vector recall) — from scratch, no vector-DB SaaS required to understand it.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [Build AI Agent Memory From Scratch](https://dev.to/zachary62/build-ai-agent-memory-from-scratch-tutorial-for-dummies-47ma) — Zachary Huang · both halves by hand — a short-term message window and long-term embedding recall in plain dicts, no vector DB.
+  - [Advanced Agent with Summarized Short-Term + Vector Long-Term Memory](https://www.marktechpost.com/2025/09/02/how-to-build-an-advanced-ai-agent-with-summarized-short-term-and-vector-based-long-term-memory/) — Asif Razzaq · inline Python: an LLM-summarizing short-term buffer + a FAISS + sentence-transformers long-term class.
+  - [Context Engineering for Agents](https://rlancemartin.github.io/2025/06/23/context_engineering/) — Lance Martin · vendor-neutral write/select/compress/isolate framing of memory as buildable techniques.
 - **Reference implementation:** _link_
 - **What you learn:** windowing, summarization, embedding recall, and when each fails.
 
@@ -93,7 +96,10 @@ Retrieval-augmented generation built by hand: chunking, embedding, retrieval, re
 
 The Model Context Protocol from first principles — a minimal server and client, no SDK magic. _Hot, under-covered, and a flagship of this repo._
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [MCP on the Wire: JSON-RPC 2.0 in Go](https://imti.co/mcp-json-rpc/) — Craig Johnston · message-by-message series that hand-builds the JSON-RPC wire layer, then initialize + tools/list with full wire captures.
+  - [Understanding MCP Through Raw STDIO Communication](https://foojay.io/today/understanding-mcp-through-raw-stdio-communication/) — David Parry · Java-stdlib-only server: newline framing, routing, and the full initialize → tools/list → tools/call flow.
+  - [Building an MCP Server from Scratch: No SDK, Just a JSON-RPC Loop](https://medium.com/write-a-catalyst/building-an-mcp-server-from-scratch-no-sdk-just-a-json-rpc-loop-4894a0119da7) — DevQuill · ~90-line Python counterpart: stdio transport, dispatch loop, JSON-Schema tools list, capability negotiation.
 - **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`).
 - **What you learn:** transport, tool/resource exposure, and the handshake agents use to discover capabilities.
 
@@ -101,7 +107,10 @@ The Model Context Protocol from first principles — a minimal server and client
 
 A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit loop, and a verification pass. _Flagship._
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [How to Build an Agent in JavaScript](https://kevinyank.com/posts/how-to-build-an-agent-in-javascript/) — Kevin Yank · agent loop + read/list/edit-file tools + human-in-the-loop consent in ~400 lines of TypeScript.
+  - [How to Build an Agent (or: The Emperor Has No Clothes)](https://ampcode.com/notes/how-to-build-an-agent) — Thorsten Ball · the canonical piece — a full code-editing agent in ~400 lines against the raw API.
+  - [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) — shareAI-lab · 20 sequential lessons layering tool dispatch, permissions, context management, the edit loop, and sub-agents.
 - **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`).
 - **What you learn:** how a coding agent plans edits, runs commands, and self-checks — the parts a demo hides.
 
@@ -109,7 +118,7 @@ A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit lo
 
 Where the money and latency actually go: token counting, streaming, prompt caching, and cost attribution. _Almost no one teaches this from scratch — the unique piece of this repo._
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:** _almost nothing exists from scratch — which is exactly why the reference implementation below is the point._
 - **Reference implementation:** ⭐ [**`reference/07-token-accounting/`**](reference/07-token-accounting/) — dependency-free token estimation, cost, prompt-cache math, and streaming metrics (`node example.mjs`).
 - **What you learn:** how to measure and control cost/latency per request instead of guessing.
 
@@ -128,7 +137,10 @@ Evaluating agents from scratch: task suites, graders, regression detection — w
 
 Coordinating multiple agents: hand-offs, shared state, fan-out/fan-in — built by hand.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [Orchestrating Agents: Routines and Handoffs](https://developers.openai.com/cookbook/examples/orchestrating_agents) — Ilan Bigio · hand-builds the tool-calling loop, a schema helper, and agent-swapping handoffs on the raw API.
+  - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — Anthropic · orchestrator-worker mechanics from a shipped system: lead-agent planning, parallel subagents, shared state, failure modes + fixes.
+  - [Multi-Agent System: Coordinator + Workers in 200 Lines](https://www.aibuilderclub.com/blog/multi-agent-system-python-tutorial) — AI Jason · ~200-line coordinator+workers on the raw SDK with parallel work and explicit retry-on-failure.
 - **Reference implementation:** _link_
 - **What you learn:** when multi-agent actually helps vs. adds latency and failure modes.
 
@@ -136,7 +148,10 @@ Coordinating multiple agents: hand-offs, shared state, fan-out/fan-in — built 
 
 Safety and control: input/output guardrails, approval gates, and human-in-the-loop checkpoints.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [How to implement LLM guardrails](https://developers.openai.com/cookbook/examples/how_to_use_guardrails) — Colin Jarvis · hand-builds an input topical guardrail (parallel relevance check) + an output moderation guardrail (scored block threshold) in plain async Python.
+  - [Guardrails vs. evaluators — what's the difference?](https://hamel.dev/blog/posts/evals-faq/whats-the-difference-between-guardrails-evaluators.html) — Hamel Husain · vendor-neutral definition of a guardrail as a fast inline check (regex, block-lists, schema validators, light classifiers).
+  - [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) — Anthropic · the control half: LLM-screening guardrail pattern, human-in-the-loop checkpoints, stopping conditions, sandboxing.
 - **Reference implementation:** _link_
 - **What you learn:** where to put a human in the loop and how to fail safe.
 
