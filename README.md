@@ -13,7 +13,7 @@
 
 ---
 
-> 🚧 **v1 in progress.** The stack map below is the skeleton. Curated links land per section, and the flagship reference implementations (⭐) are being written. Watch/star to follow.
+> 🚧 **v1 in progress.** First flagship shipped (§7 token-accounting, runnable) and 4 sections curated (agent loop, tool calling, RAG, evals). Next: §5 MCP and §6 coding-agent reference impls + the remaining curation. Watch/star to follow.
 
 ## Why this exists
 
@@ -33,14 +33,14 @@ There are already excellent **from-scratch courses** — one author, one linear 
 
 | # | Component | Curated | Reference impl |
 |---|-----------|---------|----------------|
-| 1 | [The agent loop](#1-the-agent-loop) | 🔗 | link |
-| 2 | [Tool / function calling](#2-tool--function-calling) | 🔗 | link |
+| 1 | [The agent loop](#1-the-agent-loop) | ✅ | link |
+| 2 | [Tool / function calling](#2-tool--function-calling) | ✅ | link |
 | 3 | [Memory](#3-memory) | 🔗 | link |
-| 4 | [RAG](#4-rag) | 🔗 | link |
+| 4 | [RAG](#4-rag) | ✅ | link |
 | 5 | [MCP server + client](#5-mcp-server--client) | 🔗 | ⭐ ours |
 | 6 | [Coding agent](#6-coding-agent) | 🔗 | ⭐ ours |
 | 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | 🔗 | ⭐ [code](reference/07-token-accounting/) |
-| 8 | [Evals](#8-evals) | 🔗 | link |
+| 8 | [Evals](#8-evals) | ✅ | link |
 | 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | 🔗 | link |
 | 10 | [Guardrails & human-in-the-loop](#10-guardrails--human-in-the-loop) | 🔗 | link |
 
@@ -52,7 +52,10 @@ There are already excellent **from-scratch courses** — one author, one linear 
 
 The `while` loop at the heart of every agent: think → act → observe → repeat (ReAct). Build it once and every framework demystifies itself.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [How to Build an Agent](https://ampcode.com/notes/how-to-build-an-agent) — Thorsten Ball · the canonical read-input → call-model → detect `tool_use` → execute → feed-back loop in ~300 lines, zero framework.
+  - [The Dummy Agent Library](https://huggingface.co/learn/agents-course/unit1/dummy-agent-library) — Hugging Face · hand-codes the ReAct Thought/Action/Observation loop on a raw LLM API, including the `stop=["Observation:"]` trick.
+  - [A Super Simple ReAct Agent from Scratch](https://medium.com/data-science-collective/a-super-simple-react-agent-87913949f69f) — Sami Maameri · minimal Python loop on the raw SDK driven by `stop_reason == 'tool_use'`.
 - **Reference implementation:** _link_
 - **What you learn:** how control flow, stop conditions, and the model↔tool handshake actually work — no orchestration library required.
 
@@ -60,7 +63,10 @@ The `while` loop at the heart of every agent: think → act → observe → repe
 
 How a model asks to run code and gets the result back: schema, dispatch, result formatting, error handling.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [How to Build an Agent (or: The Emperor Has No Clothes)](https://ampcode.com/how-to-build-an-agent) — Thorsten Ball · hand-builds the full tool-use loop: schema generation, `tool_use` detection, local registry dispatch, result feed-back.
+  - [Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent) — Anthropic · five concentric "rings" — input_schema, stop_reason parsing, dispatch, `tool_result` threading, parallel calls, errors — SDK only at the end.
+  - [Tool Calling From Scratch to Production](https://www.decodingai.com/p/tool-calling-from-scratch-to-production) — Paul Iusztin · the manual full cycle (signatures → JSON schema → registry → extract → execute → thread results) with error handling.
 - **Reference implementation:** _link_
 - **What you learn:** the JSON-schema contract, safe dispatch, and why malformed tool calls happen.
 
@@ -76,7 +82,10 @@ Short-term (context management, compaction) and long-term (vector recall) — fr
 
 Retrieval-augmented generation built by hand: chunking, embedding, retrieval, reranking, and grounding.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [RAG From Scratch (notebooks + videos)](https://github.com/langchain-ai/rag-from-scratch) — Lance Martin · ~18 short notebooks from raw indexing/retrieval up through RAG-Fusion, HyDE, RAPTOR, ColBERT, CRAG — each reimplemented by hand.
+  - [RAG_Techniques](https://github.com/NirDiamant/RAG_Techniques) — Nir Diamant · the broadest hand-coded reference: chunking, HyDE, fusion, cross-encoder reranking, graph retrieval, CRAG/Self-RAG/RAPTOR, with intuition + code.
+  - [A beginner's guide to building a RAG application from scratch](https://learnbybuilding.ai/tutorial/rag-from-scratch/) — Bill Chambers · purest "no libraries" on-ramp: corpus, hand-written similarity, retrieval, prompt assembly in plain Python.
 - **Reference implementation:** _link_
 - **What you learn:** why chunking strategy dominates quality, and where retrieval silently drops relevance.
 
@@ -108,7 +117,10 @@ Where the money and latency actually go: token counting, streaming, prompt cachi
 
 Evaluating agents from scratch: task suites, graders, regression detection — without an eval platform.
 
-- **Best from-scratch tutorials:** _curated — landing in v1_
+- **Best from-scratch tutorials:**
+  - [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) — Anthropic · the full agent-eval loop by hand: sourcing tasks from failures, task design, the three grader types, capability vs regression evals.
+  - [Using LLM-as-a-Judge for Evaluation](https://hamel.dev/blog/posts/llm-judge/) — Hamel Husain · the canonical hand-built LLM-judge ("Critique Shadowing"): expert-labeled data, binary pass/fail + critiques, iteratively calibrate the judge to expert labels.
+  - [Task-Specific LLM Evals that Do & Don't Work](https://eugeneyan.com/writing/evals/) — Eugene Yan · build-your-own graders per task type (classification, extraction, summarization, translation) with honest coverage of which metrics actually correlate.
 - **Reference implementation:** _link_
 - **What you learn:** why agent evals are hard, and what a trustworthy grader looks like.
 
