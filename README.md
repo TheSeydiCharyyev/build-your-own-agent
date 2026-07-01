@@ -13,7 +13,7 @@
 
 ---
 
-> 🚧 **v1 in progress.** First flagship shipped (§7 token-accounting, runnable) and 4 sections curated (agent loop, tool calling, RAG, evals). Next: §5 MCP and §6 coding-agent reference impls + the remaining curation. Watch/star to follow.
+> 🚧 **v1 in progress.** All three flagship reference implementations shipped and runnable — §5 MCP server+client, §6 coding agent, §7 token-accounting (each `node`-runnable, zero deps). Curation done for §1/§2/§4/§8; the rest is landing. Watch/star to follow.
 
 ## Why this exists
 
@@ -37,8 +37,8 @@ There are already excellent **from-scratch courses** — one author, one linear 
 | 2 | [Tool / function calling](#2-tool--function-calling) | ✅ | link |
 | 3 | [Memory](#3-memory) | 🔗 | link |
 | 4 | [RAG](#4-rag) | ✅ | link |
-| 5 | [MCP server + client](#5-mcp-server--client) | 🔗 | ⭐ ours |
-| 6 | [Coding agent](#6-coding-agent) | 🔗 | ⭐ ours |
+| 5 | [MCP server + client](#5-mcp-server--client) | 🔗 | ⭐ [code](reference/05-mcp-server-client/) |
+| 6 | [Coding agent](#6-coding-agent) | 🔗 | ⭐ [code](reference/06-coding-agent/) |
 | 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | 🔗 | ⭐ [code](reference/07-token-accounting/) |
 | 8 | [Evals](#8-evals) | ✅ | link |
 | 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | 🔗 | link |
@@ -94,7 +94,7 @@ Retrieval-augmented generation built by hand: chunking, embedding, retrieval, re
 The Model Context Protocol from first principles — a minimal server and client, no SDK magic. _Hot, under-covered, and a flagship of this repo._
 
 - **Best from-scratch tutorials:** _curated — landing in v1_
-- **Reference implementation:** ⭐ _ours — minimal MCP server + client (in progress)_
+- **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`).
 - **What you learn:** transport, tool/resource exposure, and the handshake agents use to discover capabilities.
 
 ## 6. Coding agent ⭐
@@ -102,7 +102,7 @@ The Model Context Protocol from first principles — a minimal server and client
 A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit loop, and a verification pass. _Flagship._
 
 - **Best from-scratch tutorials:** _curated — landing in v1_
-- **Reference implementation:** ⭐ _ours — minimal coding agent (in progress)_
+- **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`).
 - **What you learn:** how a coding agent plans edits, runs commands, and self-checks — the parts a demo hides.
 
 ## 7. Token accounting, streaming & cache ⭐
