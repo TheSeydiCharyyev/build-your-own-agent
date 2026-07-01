@@ -39,7 +39,7 @@ There are already excellent **from-scratch courses** — one author, one linear 
 | 4 | [RAG](#4-rag) | 🔗 | link |
 | 5 | [MCP server + client](#5-mcp-server--client) | 🔗 | ⭐ ours |
 | 6 | [Coding agent](#6-coding-agent) | 🔗 | ⭐ ours |
-| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | 🔗 | ⭐ ours |
+| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | 🔗 | ⭐ [code](reference/07-token-accounting/) |
 | 8 | [Evals](#8-evals) | 🔗 | link |
 | 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | 🔗 | link |
 | 10 | [Guardrails & human-in-the-loop](#10-guardrails--human-in-the-loop) | 🔗 | link |
@@ -101,7 +101,7 @@ A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit lo
 Where the money and latency actually go: token counting, streaming, prompt caching, and cost attribution. _Almost no one teaches this from scratch — the unique piece of this repo._
 
 - **Best from-scratch tutorials:** _curated — landing in v1_
-- **Reference implementation:** ⭐ _ours — token/stream/cache accounting (in progress)_
+- **Reference implementation:** ⭐ [**`reference/07-token-accounting/`**](reference/07-token-accounting/) — dependency-free token estimation, cost, prompt-cache math, and streaming metrics (`node example.mjs`).
 - **What you learn:** how to measure and control cost/latency per request instead of guessing.
 
 ## 8. Evals
