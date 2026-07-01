@@ -1,0 +1,68 @@
+name: Add a resource
+description: Suggest a from-scratch tutorial or reference for one of the stack sections.
+title: "[resource] <section>: <title>"
+labels: ["resource"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep the map trustworthy. Please read the
+        [inclusion criteria](../blob/main/CONTRIBUTING.md#inclusion-criteria-for-links) first —
+        resources that don't clear the bar are closed, not merged. Quality over count.
+  - type: dropdown
+    id: section
+    attributes:
+      label: Section
+      description: Which component does this resource teach?
+      options:
+        - "1. The agent loop"
+        - "2. Tool / function calling"
+        - "3. Memory"
+        - "4. RAG"
+        - "5. MCP server + client"
+        - "6. Coding agent"
+        - "7. Token accounting, streaming & cache"
+        - "8. Evals"
+        - "9. Multi-agent / orchestration"
+        - "10. Guardrails & human-in-the-loop"
+        - "New section (explain below)"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Resource URL
+      placeholder: https://...
+    validations:
+      required: true
+  - type: input
+    id: title
+    attributes:
+      label: Title
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Author or org
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this the best FROM-SCRATCH pick?
+      description: One or two sentences. What does it build by hand that other resources don't?
+    validations:
+      required: true
+  - type: checkboxes
+    id: criteria
+    attributes:
+      label: Inclusion criteria
+      description: All must be true, or the resource will be declined.
+      options:
+        - label: It genuinely builds the concept FROM SCRATCH (not a framework/SDK quickstart).
+          required: true
+        - label: It's freely accessible (no paywall or sign-up wall).
+          required: true
+        - label: The link resolves today and is on-topic for the section.
+          required: true
+        - label: It's high quality and reasonably current, and adds something the existing picks don't.
+          required: true
