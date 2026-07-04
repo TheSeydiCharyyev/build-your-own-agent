@@ -1,15 +1,27 @@
 // tools.mjs
 //
 // The hands of a coding agent. Each tool is a plain function plus a schema the
-// model uses to decide how to call it. All paths are resolved inside `cwd` so
-// the agent can only touch its workspace.
+// model uses to decide how to call it. File paths are resolved and then
+// VERIFIED to stay inside `cwd` — resolving alone is not containment
+// (`../x` and absolute paths both escape it); see `resolve` below.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 
 export function makeTools(cwd) {
-  const resolve = (p) => path.resolve(cwd, p);
+  // path.resolve(cwd, p) is NOT a sandbox: it happily returns paths outside
+  // cwd for `../x` or absolute inputs. Containment = resolve, then check the
+  // result is still under cwd before touching the filesystem. (A hardened
+  // agent also needs a realpath check against symlink escapes — see §10.)
+  const resolve = (p) => {
+    const full = path.resolve(cwd, p);
+    const rel = path.relative(cwd, full);
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      throw new Error(`path escapes the workspace: ${p}`);
+    }
+    return full;
+  };
 
   return {
     write_file: {

@@ -23,9 +23,16 @@ export async function runAgent({ task, model, tools, maxSteps = 10, log = () => 
 
     for (const call of out.toolCalls) {
       const tool = tools[call.name];
-      const result = tool
-        ? String(tool.run(call.args || {}))
-        : `error: unknown tool "${call.name}"`;
+      let result;
+      try {
+        result = tool
+          ? String(tool.run(call.args || {}))
+          : `error: unknown tool "${call.name}"`;
+      } catch (e) {
+        // A tool failure is data for the model, not a crash: feed the error
+        // back as the result so it can react (MCP calls this `isError`).
+        result = `error: ${e.message}`;
+      }
 
       log(`step ${step}: ${call.name}(${compact(call.args)}) -> ${truncate(result)}`);
 

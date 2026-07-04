@@ -25,7 +25,7 @@ final: Created greet.txt and verified its contents: "hello from byoa"
 | File | Role |
 |------|------|
 | [`agent.mjs`](./agent.mjs) | the loop — `model → toolCalls → run → feed back → repeat`, capped by `maxSteps` |
-| [`tools.mjs`](./tools.mjs) | the hands — `write_file`, `read_file`, `list_dir`, `run_shell`, all sandboxed to a workspace dir |
+| [`tools.mjs`](./tools.mjs) | the hands — `write_file`, `read_file`, `list_dir` (path-checked to stay inside the workspace) + `run_shell` (deliberately unguarded — see below) |
 | [`mock-model.mjs`](./mock-model.mjs) | a deterministic stand-in LLM that reacts to tool results, so the demo needs no key |
 | [`example.mjs`](./example.mjs) | wires them together on a real task |
 

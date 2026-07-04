@@ -34,7 +34,7 @@ This repo is the **map of the modern agent stack**: for every component, it poin
 
 There are already excellent **from-scratch courses** — one author, one linear path, their own codebase (e.g. `learn-claude-code`, `ai-engineering-from-scratch`). This is not another one. This is the layer above them:
 
-- **A curated meta-index, not a course.** Best-of-breed *per component* — the strongest tutorial for the agent loop, a different one for RAG, another for evals — instead of one author's take on all of it. Vendor-neutral by design.
+- **A curated meta-index, not a course.** Best-of-breed *per component* — the strongest tutorial for the agent loop, a different one for RAG, another for evals — instead of one author's take on all of it. Vendor-neutral by design, and no resource appears twice across the index.
 - **A living map, not a frozen curriculum.** The field moves monthly. A 500-lesson course ossifies; an index swaps one link and stays current. Quality is gatekept like a real `awesome` list.
 - **Own reference implementations where the gaps are.** For the components with no good from-scratch resource, this repo ships its own minimal code — the part you can't get by linking to someone else's course.
 
@@ -48,7 +48,7 @@ There are already excellent **from-scratch courses** — one author, one linear 
 | 4 | [RAG](#4-rag) | ✅ | — |
 | 5 | [MCP server + client](#5-mcp-server--client) | ✅ | ⭐ [code](reference/05-mcp-server-client/) |
 | 6 | [Coding agent](#6-coding-agent) | ✅ | ⭐ [code](reference/06-coding-agent/) |
-| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | — | ⭐ [code](reference/07-token-accounting/) |
+| 7 | [Token accounting, streaming & cache](#7-token-accounting-streaming--cache) | ✅ | ⭐ [code](reference/07-token-accounting/) |
 | 8 | [Evals](#8-evals) | ✅ | — |
 | 9 | [Multi-agent / orchestration](#9-multi-agent--orchestration) | ✅ | — |
 | 10 | [Guardrails & human-in-the-loop](#10-guardrails--human-in-the-loop) | ✅ | — |
@@ -72,8 +72,8 @@ The `while` loop at the heart of every agent: think → act → observe → repe
 How a model asks to run code and gets the result back: schema, dispatch, result formatting, error handling.
 
 - **Best from-scratch tutorials:**
-  - [How to Build an Agent (or: The Emperor Has No Clothes)](https://ampcode.com/how-to-build-an-agent) — Thorsten Ball · hand-builds the full tool-use loop: schema generation, `tool_use` detection, local registry dispatch, result feed-back.
   - [Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent) — Anthropic · five concentric "rings" — input_schema, stop_reason parsing, dispatch, `tool_result` threading, parallel calls, errors — SDK only at the end.
+  - [How to call functions with chat models](https://developers.openai.com/cookbook/examples/how_to_call_functions_with_chat_models) — OpenAI · the original function-calling walkthrough: JSON-schema definitions, extracting the model's arguments, executing, and appending results back into the conversation.
   - [Tool Calling From Scratch to Production](https://www.decodingai.com/p/tool-calling-from-scratch-to-production) — Paul Iusztin · the manual full cycle (signatures → JSON schema → registry → extract → execute → thread results) with error handling.
 - **What you learn:** the JSON-schema contract, safe dispatch, and why malformed tool calls happen.
 
@@ -97,9 +97,9 @@ Retrieval-augmented generation built by hand: chunking, embedding, retrieval, re
   - [A beginner's guide to building a RAG application from scratch](https://learnbybuilding.ai/tutorial/rag-from-scratch/) — Bill Chambers · purest "no libraries" on-ramp: corpus, hand-written similarity, retrieval, prompt assembly in plain Python.
 - **What you learn:** why chunking strategy dominates quality, and where retrieval silently drops relevance.
 
-## 5. MCP server + client ⭐
+## 5. MCP server + client
 
-The Model Context Protocol from first principles — a minimal server and client, no SDK magic. _Hot, under-covered, and a flagship of this repo._
+The Model Context Protocol from first principles — a minimal server and client, no SDK magic. _⭐ Hot, under-covered, and a flagship of this repo._
 
 - **Best from-scratch tutorials:**
   - [MCP on the Wire: JSON-RPC 2.0 in Go](https://imti.co/mcp-json-rpc/) — Craig Johnston · message-by-message series that hand-builds the JSON-RPC wire layer, then initialize + tools/list with full wire captures.
@@ -108,24 +108,27 @@ The Model Context Protocol from first principles — a minimal server and client
 - **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`).
 - **What you learn:** transport, tool/resource exposure, and the handshake agents use to discover capabilities.
 
-## 6. Coding agent ⭐
+## 6. Coding agent
 
-A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit loop, and a verification pass. _Flagship._
+A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit loop, and a verification pass. _⭐ Flagship._
 
 - **Best from-scratch tutorials:**
   - [How to Build an Agent in JavaScript](https://kevinyank.com/posts/how-to-build-an-agent-in-javascript/) — Kevin Yank · agent loop + read/list/edit-file tools + human-in-the-loop consent in ~400 lines of TypeScript.
-  - [How to Build an Agent (or: The Emperor Has No Clothes)](https://ampcode.com/notes/how-to-build-an-agent) — Thorsten Ball · the canonical piece — a full code-editing agent in ~400 lines against the raw API.
+  - [How to build a coding agent (free workshop)](https://ghuntley.com/agent/) — Geoffrey Huntley · a full workshop built on one thesis — "300 lines of code running in a loop with LLM tokens" — from bare loop to a working coding agent.
   - [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) — shareAI-lab · 20 sequential lessons layering tool dispatch, permissions, context management, the edit loop, and sub-agents.
 - **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`).
 - **What you learn:** how a coding agent plans edits, runs commands, and self-checks — the parts a demo hides.
 
-## 7. Token accounting, streaming & cache ⭐
+## 7. Token accounting, streaming & cache
 
-Where the money and latency actually go: token counting, streaming, prompt caching, and cost attribution. _Almost no one teaches this from scratch — the unique piece of this repo._
+Where the money and latency actually go: token counting, streaming, prompt caching, and cost attribution. _⭐ Flagship — tokenizers from scratch are well taught; the cost ledger of an agent loop is not._
 
-- **Best from-scratch tutorials:** _almost nothing exists from scratch — which is exactly why the reference implementation below is the point._
+- **Best from-scratch tutorials:**
+  - [Let's build the GPT Tokenizer](https://www.youtube.com/watch?v=zduSFxRajkE) — Andrej Karpathy · builds BPE tokenization from an empty file to a working GPT-style tokenizer ([minbpe](https://github.com/karpathy/minbpe) is the companion repo) — why token counts are what they are.
+  - [How to count tokens with tiktoken](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken) — OpenAI · counting tokens for messages and function definitions *before* sending them — the estimation half of accounting.
+  - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — Anthropic · the real cache-write premium / cache-read discount price model and breakpoint rules — the same math the reference implementation mirrors.
 - **Reference implementation:** ⭐ [**`reference/07-token-accounting/`**](reference/07-token-accounting/) — dependency-free token estimation, cost, prompt-cache math, and streaming metrics (`node example.mjs`).
-- **What you learn:** how to measure and control cost/latency per request instead of guessing.
+- **What you learn:** per-step cost attribution and the cache economics of a full agent loop — the piece none of the tutorials above teach.
 
 ## 8. Evals
 
