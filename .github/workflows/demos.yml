@@ -22,8 +22,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: "MCP server + client (§5)"
-        run: node reference/05-mcp-server-client/mcp-client.mjs | grep -F "add(2, 3) -> 5"
+        run: |
+          node reference/05-mcp-server-client/mcp-client.mjs | grep -F "add(2, 3) -> 5"
       - name: "Coding agent (§6)"
-        run: node reference/06-coding-agent/example.mjs | grep -F "final: Created greet.txt"
+        run: |
+          node reference/06-coding-agent/example.mjs | grep -F "final: Created greet.txt"
       - name: "Token accounting (§7)"
-        run: node reference/07-token-accounting/example.mjs | grep -F "cache saved:"
+        run: |
+          node reference/07-token-accounting/example.mjs | grep -F "cache saved:"

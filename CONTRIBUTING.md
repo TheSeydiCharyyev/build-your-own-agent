@@ -8,7 +8,7 @@ There are three ways to help:
 2. **Improve a reference implementation** (or propose a new one).
 3. **Propose a new section** (rare — the stack is deliberately small).
 
-The fastest path is opening an **[Add a resource](../../issues/new?template=add-a-resource.yml)** issue. PRs that edit `README.md` directly are welcome too.
+The fastest path is opening an **[Add a resource](https://github.com/TheSeydiCharyyev/build-your-own-agent/issues/new?template=add-a-resource.yml)** issue. PRs that edit `README.md` directly are welcome too.
 
 ---
 
@@ -55,7 +55,7 @@ If a section is well-covered by external tutorials, it does **not** need our own
 
 ## Submitting
 
-- **Issue:** use the [Add a resource](../../issues/new?template=add-a-resource.yml) form. Best for a single link.
+- **Issue:** use the [Add a resource](https://github.com/TheSeydiCharyyev/build-your-own-agent/issues/new?template=add-a-resource.yml) form. Best for a single link.
 - **PR:** keep it small — one section, or one reference implementation, per PR. Edit `README.md` (and add a `reference/` folder if relevant). No need to touch unrelated sections.
 
 The maintainer curates the final wording and ordering. If your link is solid but the blurb changes, that's normal.

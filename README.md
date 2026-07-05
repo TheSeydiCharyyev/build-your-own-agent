@@ -171,7 +171,7 @@ Safety and control: input/output guardrails, approval gates, and human-in-the-lo
 
 Curated links and reference implementations are gatekept for quality — this is a map you can trust, not a dump of every link, so **most submissions are refined or declined**, not merged as-is.
 
-- **Suggest a resource** — open an [Add a resource](../../issues/new?template=add-a-resource.yml) issue.
+- **Suggest a resource** — open an [Add a resource](https://github.com/TheSeydiCharyyev/build-your-own-agent/issues/new?template=add-a-resource.yml) issue.
 - **Read the bar first** — [CONTRIBUTING.md](CONTRIBUTING.md) covers inclusion criteria, the entry format, and how reference implementations work.
 
 ## License
