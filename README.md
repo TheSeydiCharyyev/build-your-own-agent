@@ -51,7 +51,7 @@ There are already excellent **from-scratch courses** — one author, one linear 
 
 ## Who curates this
 
-I'm [Seydi](https://github.com/TheSeydiCharyyev) — an OSS contributor with merged PRs in [Storybook](https://github.com/storybookjs/storybook) (org member), [goose](https://github.com/block/goose), and [Supabase](https://github.com/supabase/supabase-js). §7 grew out of building [quotaburn](https://github.com/TheSeydiCharyyev/quotaburn), a token-cost CLI on npm.
+I'm [Seydi](https://github.com/TheSeydiCharyyev), an open-source contributor. §7 grew out of building [quotaburn](https://github.com/TheSeydiCharyyev/quotaburn), a token-cost CLI on npm.
 
 Method: every link is fetched and read, and every reference demo is run, before it enters the index — CI re-verifies both (badges above).
 
