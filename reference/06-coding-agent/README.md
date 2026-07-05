@@ -4,6 +4,8 @@ A Claude-Code / Cursor-style coding agent, reduced to its skeleton: a loop, a ha
 
 The insight a demo hides: a coding agent is not magic, it's **one loop** — ask the model what to do, run the tools it asks for, feed the results back, repeat until it says done. Everything else plugs into that.
 
+**Want to build it yourself instead of reading it?** [TUTORIAL.md](./TUTORIAL.md) walks the whole thing step by step, from an empty file.
+
 ## Run it
 
 ```bash

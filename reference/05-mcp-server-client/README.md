@@ -4,6 +4,8 @@ The Model Context Protocol, from first principles — a working server **and** c
 
 MCP has a reputation for being mysterious. It isn't: it's **JSON-RPC 2.0 sent as newline-delimited JSON over stdin/stdout.** Strip the SDK away and the whole "protocol" an agent needs is three calls.
 
+**Want to build it yourself instead of reading it?** [TUTORIAL.md](./TUTORIAL.md) walks the whole thing step by step, from an empty file.
+
 ## Run it
 
 ```bash

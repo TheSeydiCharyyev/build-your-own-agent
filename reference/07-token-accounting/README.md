@@ -4,6 +4,8 @@ Where an agent's money and latency actually go — built from scratch, zero depe
 
 Most tutorials stop at "call the model." This one covers the part that decides your bill: **token estimation, cost, prompt-cache math, and streaming metrics.** ~150 lines of plain JavaScript you can read in one sitting.
 
+**Want to build it yourself instead of reading it?** [TUTORIAL.md](./TUTORIAL.md) walks the whole thing step by step, from an empty file.
+
 ## Run it
 
 ```bash
