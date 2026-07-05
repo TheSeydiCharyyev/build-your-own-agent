@@ -1,7 +1,7 @@
 <h1 align="center">build-your-own-agent</h1>
 
 <p align="center">
-  <em>The build-your-own-x for the modern AI-agent stack — reimplement every component from scratch, no frameworks, no black boxes.</em>
+  <em>The build-your-own-x of the AI-agent stack — the index of the strongest from-scratch tutorial for each of its 10 components, plus runnable reference code where none exists.</em>
 </p>
 
 <p align="center">
@@ -18,12 +18,22 @@
 
 ```bash
 git clone https://github.com/TheSeydiCharyyev/build-your-own-agent
-node build-your-own-agent/reference/06-coding-agent/example.mjs
+node build-your-own-agent/reference/07-token-accounting/example.mjs
 ```
 
-A coding agent writes a file, reads it back, and verifies itself — zero dependencies, no API key, Node 18+. Then open [`agent.mjs`](reference/06-coding-agent/agent.mjs): the entire loop fits on one page.
+```
+stream metrics: { ttftMs: 26, totalMs: 378, tokensPerSec: 100.53, outputTokens: 38 }
+
+with cache:   $0.001035 | cacheHitRate 0.993151
+without cache: $0.00495
+cache saved:  79% on this step
+```
+
+The prompt-cache economics providers advertise (~80% off), derived from first principles in dependency-free code you can read in one sitting — zero dependencies, no API key, Node 18+ (timings vary run to run). Prefer to watch an agent loop? `node build-your-own-agent/reference/06-coding-agent/example.mjs` steps a coding agent through a scripted task (deterministic mock model — inspectable without a key), then open [`agent.mjs`](reference/06-coding-agent/agent.mjs): the entire loop fits on one page.
 
 ## Why this exists
+
+The agent-education boom produced excellent 500-lesson courses — and no router. You don't need to relearn the agent loop from a fourth curriculum; you need the strongest ~300 lines ever written about it, then the strongest piece on tool calling, then the strongest on evals. Nobody owned that index layer. This repo is it.
 
 Everyone can call an agent framework. Almost no one can rebuild the pieces underneath it. When something breaks — a tool call loops, memory bloats the context, the token bill explodes, an MCP server hangs — you need to know how the machine actually works, not which framework method to call.
 
@@ -36,6 +46,8 @@ There are already excellent **from-scratch courses** — one author, one linear 
 - **A curated meta-index, not a course.** Best-of-breed *per component* — the strongest tutorial for the agent loop, a different one for RAG, another for evals — instead of one author's take on all of it. Vendor-neutral by design, and no resource appears twice across the index.
 - **A living map, not a frozen curriculum.** The field moves monthly. A 500-lesson course ossifies; an index swaps one link and stays current. Quality is gatekept like a real `awesome` list.
 - **Own reference implementations where the gaps are.** For the components with no good from-scratch resource, this repo ships its own minimal code — the part you can't get by linking to someone else's course.
+
+**Who it's for:** developers who already ship with frameworks — or finished a course — and want per-component depth. The second repo you star, after the course.
 
 ## Who curates this
 
