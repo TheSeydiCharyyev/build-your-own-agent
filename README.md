@@ -145,6 +145,7 @@ Where the money and latency actually go: token counting, streaming, prompt cachi
   - [How to count tokens with tiktoken](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken) — OpenAI · counting tokens for messages and function definitions *before* sending them — the estimation half of accounting.
   - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — Anthropic · the real cache-write premium / cache-read discount price model and breakpoint rules — the same math the reference implementation mirrors.
 - **Reference implementation:** ⭐ [**`reference/07-token-accounting/`**](reference/07-token-accounting/) — dependency-free token estimation, cost, prompt-cache math, and streaming metrics (`node example.mjs`).
+- **The same math in production:** [quotaburn](https://github.com/TheSeydiCharyyev/quotaburn) — a zero-dependency CLI that applies this model to real Claude Code logs.
 - **What you learn:** per-step cost attribution and the cache economics of a full agent loop — the piece none of the tutorials above teach.
 
 ## 8. Evals
