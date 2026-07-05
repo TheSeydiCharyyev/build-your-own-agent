@@ -5,10 +5,9 @@
 </p>
 
 <p align="center">
-  <img alt="stars" src="https://img.shields.io/github/stars/TheSeydiCharyyev/build-your-own-agent?style=social">
+  <a href="https://github.com/TheSeydiCharyyev/build-your-own-agent/actions/workflows/demos.yml"><img alt="demos" src="https://github.com/TheSeydiCharyyev/build-your-own-agent/actions/workflows/demos.yml/badge.svg"></a>
+  <a href="https://github.com/TheSeydiCharyyev/build-your-own-agent/actions/workflows/links.yml"><img alt="links" src="https://github.com/TheSeydiCharyyev/build-your-own-agent/actions/workflows/links.yml/badge.svg"></a>
   <img alt="license" src="https://img.shields.io/badge/license-MIT-blue">
-  <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen">
-  <img alt="status" src="https://img.shields.io/badge/status-v1-brightgreen">
 </p>
 
 ---
@@ -22,7 +21,7 @@ git clone https://github.com/TheSeydiCharyyev/build-your-own-agent
 node build-your-own-agent/reference/06-coding-agent/example.mjs
 ```
 
-A coding agent writes a file, reads it back, and verifies itself — zero dependencies, no API key. Then open [`agent.mjs`](reference/06-coding-agent/agent.mjs): the entire loop fits on one page.
+A coding agent writes a file, reads it back, and verifies itself — zero dependencies, no API key, Node 18+. Then open [`agent.mjs`](reference/06-coding-agent/agent.mjs): the entire loop fits on one page.
 
 ## Why this exists
 
@@ -37,6 +36,12 @@ There are already excellent **from-scratch courses** — one author, one linear 
 - **A curated meta-index, not a course.** Best-of-breed *per component* — the strongest tutorial for the agent loop, a different one for RAG, another for evals — instead of one author's take on all of it. Vendor-neutral by design, and no resource appears twice across the index.
 - **A living map, not a frozen curriculum.** The field moves monthly. A 500-lesson course ossifies; an index swaps one link and stays current. Quality is gatekept like a real `awesome` list.
 - **Own reference implementations where the gaps are.** For the components with no good from-scratch resource, this repo ships its own minimal code — the part you can't get by linking to someone else's course.
+
+## Who curates this
+
+I'm [Seydi](https://github.com/TheSeydiCharyyev) — an OSS contributor with merged PRs in [Storybook](https://github.com/storybookjs/storybook) (org member), [goose](https://github.com/block/goose), and [Supabase](https://github.com/supabase/supabase-js). §7 grew out of building [quotaburn](https://github.com/TheSeydiCharyyev/quotaburn), a token-cost CLI on npm.
+
+Method: every link is fetched and read, and every reference demo is run, before it enters the index — CI re-verifies both (badges above).
 
 ## The stack
 

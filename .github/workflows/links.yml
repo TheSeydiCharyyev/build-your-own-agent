@@ -1,0 +1,31 @@
+name: links
+
+on:
+  push:
+    branches: [main]
+    paths: ["**/*.md"]
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every curated link
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # 403/429 accepted: Medium/YouTube-class hosts bot-block automated
+          # requests while the pages are fine in a browser.
+          args: >-
+            --no-progress
+            --max-retries 2
+            --max-concurrency 4
+            --accept '100..=103,200..=299,403,429'
+            --exclude-all-private
+            README.md CONTRIBUTING.md 'reference/**/*.md'
+          fail: true
