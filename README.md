@@ -133,7 +133,7 @@ A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit lo
   - [How to Build an Agent in JavaScript](https://kevinyank.com/posts/how-to-build-an-agent-in-javascript/) — Kevin Yank · agent loop + read/list/edit-file tools + human-in-the-loop consent in ~400 lines of TypeScript.
   - [How to build a coding agent (free workshop)](https://ghuntley.com/agent/) — Geoffrey Huntley · a full workshop built on one thesis — "300 lines of code running in a loop with LLM tokens" — from bare loop to a working coding agent.
   - [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) — shareAI-lab · 20 sequential lessons layering tool dispatch, permissions, context management, the edit loop, and sub-agents.
-- **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`).
+- **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`) or against a live model (`node example.mjs --real`, raw HTTP, still zero dependencies).
 - **What you learn:** how a coding agent plans edits, runs commands, and self-checks — the parts a demo hides.
 
 ## 7. Token accounting, streaming & cache

@@ -7,7 +7,8 @@ The insight a demo hides: a coding agent is not magic, it's **one loop** — ask
 ## Run it
 
 ```bash
-node example.mjs
+node example.mjs          # scripted mock model — no API key needed
+node example.mjs --real   # same loop, live model (needs ANTHROPIC_API_KEY)
 ```
 
 You'll watch the agent complete a real task in a throwaway workspace:
@@ -27,11 +28,14 @@ final: Created greet.txt and verified its contents: "hello from byoa"
 | [`agent.mjs`](./agent.mjs) | the loop — `model → toolCalls → run → feed back → repeat`, capped by `maxSteps` |
 | [`tools.mjs`](./tools.mjs) | the hands — `write_file`, `read_file`, `list_dir` (path-checked to stay inside the workspace) + `run_shell` (deliberately unguarded — see below) |
 | [`mock-model.mjs`](./mock-model.mjs) | a deterministic stand-in LLM that reacts to tool results, so the demo needs no key |
+| [`real-model.mjs`](./real-model.mjs) | the same model contract against a live LLM — raw HTTP, no SDK, the tool-use wire format in plain sight |
 | [`example.mjs`](./example.mjs) | wires them together on a real task |
 
 ## Wiring a real model
 
-Replace `mockModel()` with a function that formats `messages` + `tools` for your provider, calls it, and returns either `{ toolCalls: [{ name, args }] }` or `{ done: true, text }`. **`agent.mjs` does not change** — that separation is the whole point.
+A model is any function that takes `messages` + `tools` and returns either `{ toolCalls: [{ name, args }] }` or `{ done: true, text }`. **`agent.mjs` does not change** — that separation is the whole point.
+
+[`real-model.mjs`](./real-model.mjs) is the shipped example: ~50 lines of `fetch` against the Anthropic Messages API, zero dependencies. It shows the two translations every provider adapter is made of — your transcript into the provider's message format (tool calls and results as content blocks tied together by id), and the provider's response back into the loop's contract. Swap the URL, headers, and field names to target any other provider.
 
 ## Two things to notice
 

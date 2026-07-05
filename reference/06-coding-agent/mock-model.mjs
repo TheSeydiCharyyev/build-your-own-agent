@@ -8,7 +8,8 @@
 //   1. formats `messages` + `tools` for your provider,
 //   2. calls the provider,
 //   3. returns { toolCalls: [{ name, args }] }  OR  { done: true, text }.
-// The agent loop in agent.mjs does not change at all.
+// The agent loop in agent.mjs does not change at all — real-model.mjs is a
+// working example of exactly that, over raw HTTP with zero dependencies.
 
 export function mockModel({ target = 'greet.txt', content = 'hello from byoa' } = {}) {
   return async function model({ messages }) {
