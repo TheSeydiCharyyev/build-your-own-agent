@@ -157,6 +157,7 @@ Evaluating agents from scratch: task suites, graders, regression detection — w
   - [Using LLM-as-a-Judge for Evaluation](https://hamel.dev/blog/posts/llm-judge/) — Hamel Husain · the canonical hand-built LLM-judge ("Critique Shadowing"): expert-labeled data, binary pass/fail + critiques, iteratively calibrate the judge to expert labels.
   - [Task-Specific LLM Evals that Do & Don't Work](https://eugeneyan.com/writing/evals/) — Eugene Yan · build-your-own graders per task type (classification, extraction, summarization, translation) with honest coverage of which metrics actually correlate.
 - **What you learn:** why agent evals are hard, and what a trustworthy grader looks like.
+- **Securing it →** these evals make an agent *work*; the [AI Safety Engineer Roadmap](https://github.com/TheSeydiCharyyev/ai-safety-engineer-roadmap#2--evals-the-core-skill) covers the adversarial side — evals that prove it's *safe*, and how to register your own with the UK AI Security Institute.
 
 ## 9. Multi-agent / orchestration
 
@@ -177,6 +178,7 @@ Safety and control: input/output guardrails, approval gates, and human-in-the-lo
   - [Guardrails vs. evaluators — what's the difference?](https://hamel.dev/blog/posts/evals-faq/whats-the-difference-between-guardrails-evaluators.html) — Hamel Husain · vendor-neutral definition of a guardrail as a fast inline check (regex, block-lists, schema validators, light classifiers).
   - [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) — Anthropic · the control half: LLM-screening guardrail pattern, human-in-the-loop checkpoints, stopping conditions, sandboxing.
 - **What you learn:** where to put a human in the loop and how to fail safe.
+- **Securing it →** for the adversarial half — guardrails that survive an attacker who adapts, plus agent sandboxing and least-privilege tools — see the [AI Safety Engineer Roadmap](https://github.com/TheSeydiCharyyev/ai-safety-engineer-roadmap#4--guardrails-the-defensive-half).
 
 ---
 
