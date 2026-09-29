@@ -109,7 +109,7 @@ Short-term (context management, compaction) and long-term (vector recall) — fr
 Retrieval-augmented generation built by hand: chunking, embedding, retrieval, reranking, and grounding.
 
 - **Best from-scratch tutorials:**
-  - [RAG From Scratch (notebooks + videos)](https://github.com/langchain-ai/rag-from-scratch) — Lance Martin · ~18 short notebooks from raw indexing/retrieval up through RAG-Fusion, HyDE, RAPTOR, ColBERT, CRAG — each reimplemented by hand.
+  - [RAG From Scratch (notebooks + videos)](https://github.com/langchain-ai/rag-from-scratch) — Lance Martin · 18 short parts (5 notebooks + videos) from raw indexing/retrieval up through RAG-Fusion, HyDE, RAPTOR, ColBERT, CRAG — each reimplemented by hand.
   - [RAG_Techniques](https://github.com/NirDiamant/RAG_Techniques) — Nir Diamant · the broadest hand-coded reference: chunking, HyDE, fusion, cross-encoder reranking, graph retrieval, CRAG/Self-RAG/RAPTOR, with intuition + code.
   - [A beginner's guide to building a RAG application from scratch](https://learnbybuilding.ai/tutorial/rag-from-scratch/) — Bill Chambers · purest "no libraries" on-ramp: corpus, hand-written similarity, retrieval, prompt assembly in plain Python.
 - **What you learn:** why chunking strategy dominates quality, and where retrieval silently drops relevance.
@@ -121,9 +121,8 @@ The Model Context Protocol from first principles — a minimal server and client
 - **Best from-scratch tutorials:**
   - [MCP on the Wire: JSON-RPC 2.0 in Go](https://imti.co/mcp-json-rpc/) — Craig Johnston · message-by-message series that hand-builds the JSON-RPC wire layer, then initialize + tools/list with full wire captures.
   - [Understanding MCP Through Raw STDIO Communication](https://foojay.io/today/understanding-mcp-through-raw-stdio-communication/) — David Parry · Java-stdlib-only server: newline framing, routing, and the full initialize → tools/list → tools/call flow.
-  - [Building an MCP Server from Scratch: No SDK, Just a JSON-RPC Loop](https://medium.com/write-a-catalyst/building-an-mcp-server-from-scratch-no-sdk-just-a-json-rpc-loop-4894a0119da7) — DevQuill · ~90-line Python counterpart: stdio transport, dispatch loop, JSON-Schema tools list, capability negotiation.
 - **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`) · [build it yourself, step by step](reference/05-mcp-server-client/TUTORIAL.md).
-- **What you learn:** transport, tool/resource exposure, and the handshake agents use to discover capabilities.
+- **What you learn:** transport, tool/resource exposure, and the `initialize` handshake agents use to discover capabilities — the flow of MCP revisions up to `2025-11-25`; the reference code speaks `2024-11-05`, and its tutorial also [explains what `2026-07-28` changed](reference/05-mcp-server-client/TUTORIAL.md#what-changed-in-2026-07-28).
 
 ## 6. Coding agent
 
@@ -132,7 +131,7 @@ A Claude-Code-style CLI agent from scratch: file tools, a shell tool, an edit lo
 - **Best from-scratch tutorials:**
   - [How to Build an Agent in JavaScript](https://kevinyank.com/posts/how-to-build-an-agent-in-javascript/) — Kevin Yank · agent loop + read/list/edit-file tools + human-in-the-loop consent in ~400 lines of TypeScript.
   - [How to build a coding agent (free workshop)](https://ghuntley.com/agent/) — Geoffrey Huntley · a full workshop built on one thesis — "300 lines of code running in a loop with LLM tokens" — from bare loop to a working coding agent.
-  - [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) — shareAI-lab · 20 sequential lessons layering tool dispatch, permissions, context management, the edit loop, and sub-agents.
+  - [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) — shareAI-lab · a sequential course layering tool dispatch, permissions, context management, the edit loop, and sub-agents.
 - **Reference implementation:** ⭐ [**`reference/06-coding-agent/`**](reference/06-coding-agent/) — the agent loop + file/shell tools + a pluggable model, runnable with no API key (`node example.mjs`) or against a live model (`node example.mjs --real`, raw HTTP, still zero dependencies) · [build it yourself, step by step](reference/06-coding-agent/TUTORIAL.md).
 - **What you learn:** how a coding agent plans edits, runs commands, and self-checks — the parts a demo hides.
 
@@ -157,7 +156,7 @@ Evaluating agents from scratch: task suites, graders, regression detection — w
   - [Using LLM-as-a-Judge for Evaluation](https://hamel.dev/blog/posts/llm-judge/) — Hamel Husain · the canonical hand-built LLM-judge ("Critique Shadowing"): expert-labeled data, binary pass/fail + critiques, iteratively calibrate the judge to expert labels.
   - [Task-Specific LLM Evals that Do & Don't Work](https://eugeneyan.com/writing/evals/) — Eugene Yan · build-your-own graders per task type (classification, extraction, summarization, translation) with honest coverage of which metrics actually correlate.
 - **What you learn:** why agent evals are hard, and what a trustworthy grader looks like.
-- **Securing it →** these evals make an agent *work*; the [AI Safety Engineer Roadmap](https://github.com/TheSeydiCharyyev/ai-safety-engineer-roadmap#2--evals-the-core-skill) covers the adversarial side — evals that prove it's *safe*, and how to register your own with the UK AI Security Institute.
+- **Securing it →** these evals make an agent *work*; the [AI Safety Engineer Roadmap](https://github.com/proofstone/ai-safety-engineer-roadmap#2--evals-the-core-skill) covers the adversarial side — evals that prove it's *safe*, and how to register your own with the UK AI Security Institute.
 
 ## 9. Multi-agent / orchestration
 
@@ -178,7 +177,7 @@ Safety and control: input/output guardrails, approval gates, and human-in-the-lo
   - [Guardrails vs. evaluators — what's the difference?](https://hamel.dev/blog/posts/evals-faq/whats-the-difference-between-guardrails-evaluators.html) — Hamel Husain · vendor-neutral definition of a guardrail as a fast inline check (regex, block-lists, schema validators, light classifiers).
   - [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) — Anthropic · the control half: LLM-screening guardrail pattern, human-in-the-loop checkpoints, stopping conditions, sandboxing.
 - **What you learn:** where to put a human in the loop and how to fail safe.
-- **Securing it →** for the adversarial half — guardrails that survive an attacker who adapts, plus agent sandboxing and least-privilege tools — see the [AI Safety Engineer Roadmap](https://github.com/TheSeydiCharyyev/ai-safety-engineer-roadmap#4--guardrails-the-defensive-half).
+- **Securing it →** for the adversarial half — guardrails that survive an attacker who adapts, plus agent sandboxing and least-privilege tools — see the [AI Safety Engineer Roadmap](https://github.com/proofstone/ai-safety-engineer-roadmap#4--guardrails-the-defensive-half).
 
 ---
 
