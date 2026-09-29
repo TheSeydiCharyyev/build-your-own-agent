@@ -55,7 +55,7 @@ The two entries that surprise people:
 - **`cacheWrite` costs a premium over normal input** (here 1.25×). You pay extra to populate the cache — it's a bet that you'll read it back.
 - **`cacheRead` is a deep discount** (here 0.1×). Reusing an already-processed prefix is ~10× cheaper than processing it again.
 
-These ratios mirror real provider pricing (the 1.25×/0.1× structure is exactly [Anthropic's prompt-caching model](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)). The `unknown model → throw` is a policy choice worth copying: guessing a price is worse than failing loudly.
+These ratios mirror real provider pricing: 1.25× write / 0.1× read is the standard structure of [Anthropic's prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) for a 5-minute cache. It is not universal — a 1-hour cache write costs 2×, and some models get a deeper read discount — so take real multipliers from the [pricing page](https://platform.claude.com/docs/en/about-claude/pricing) for the model you run. The `unknown model → throw` is a policy choice worth copying: guessing a price is worse than failing loudly.
 
 ## Step 3 — The meter: totals are useless, attribution is the point
 
@@ -116,8 +116,10 @@ Now make the economics tangible. An agent step resends a big stable prefix (syst
 import { UsageMeter, estimateTokens } from './token-accounting.mjs';
 
 const systemPrompt = 'You are a helpful assistant. '.repeat(200); // the stable prefix
-const userMsg = 'What is prompt caching and why does it matter?';
-const answer = '...'; // whatever the model said
+const userMsg = 'Explain prompt caching in one sentence.';
+const answer = // whatever the model said
+  'Prompt caching stores the tokens of a stable prefix so repeated requests ' +
+  'pay a cheap cache-read rate instead of re-processing the whole prompt again.';
 
 // WITH cache: the prefix is billed at the cacheRead rate.
 const meter = new UsageMeter();
@@ -146,7 +148,7 @@ const cached = meter.report();
 const uncached = meterNoCache.report();
 console.log('with cache:   $' + cached.costUSD, '| cacheHitRate', cached.cacheHitRate);
 console.log('without cache: $' + uncached.costUSD);
-console.log('cache saved:  ' + Math.round((1 - cached.costUSD / uncached.costUSD) * 100) + '%');
+console.log('cache saved:  ' + Math.round((1 - cached.costUSD / uncached.costUSD) * 100) + '% on this step');
 ```
 
 **Checkpoint** — run it:
