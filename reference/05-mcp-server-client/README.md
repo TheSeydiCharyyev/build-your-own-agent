@@ -4,6 +4,8 @@ The Model Context Protocol, from first principles — a working server **and** c
 
 MCP has a reputation for being mysterious. It isn't: it's **JSON-RPC 2.0 sent as newline-delimited JSON over stdin/stdout.** Strip the SDK away and the whole "protocol" an agent needs is three calls.
 
+> **Protocol revision:** this code speaks MCP `2024-11-05`, one of the handshake-based revisions the spec now calls *legacy*. The `2026-07-28` revision removed the `initialize` handshake — see [Which revision this is](#which-revision-this-is).
+
 **Want to build it yourself instead of reading it?** [TUTORIAL.md](./TUTORIAL.md) walks the whole thing step by step, from an empty file.
 
 ## Run it
@@ -21,7 +23,7 @@ add(2, 3) -> 5
 reverse("agent") -> tnega
 ```
 
-## The whole protocol (that a tool server needs)
+## The whole protocol (that a tool server needs, revision `2024-11-05`)
 
 | Call | Direction | Purpose |
 |------|-----------|---------|
@@ -35,6 +37,12 @@ Two things worth internalizing:
 - **A message with no `id` is a notification** — the server must not reply to it. Requests have an `id`; the client matches each response back to its request by that `id`.
 - **A tool *failing* is not a protocol error.** Errors from the tool come back inside the normal result with `isError: true`, so the model can see the failure and react. Protocol errors (`error` field) are reserved for "bad method / bad params."
 
+## Which revision this is
+
+The spec splits revisions into two eras. **Legacy** revisions (`2025-11-25` and earlier) open with the `initialize` handshake shown above. **Modern** revisions (`2026-07-28` and later) have no handshake: every request carries its protocol version and client capabilities in `_meta`, and servers must implement `server/discover` to advertise versions, capabilities, and identity.
+
+This server is legacy-only. A client that supports both eras probes with `server/discover`, gets `method not found`, and falls back to `initialize` — so it still works. A client that speaks only modern revisions fails against it. The parts that carry over: newline-delimited JSON-RPC over stdio, the `tools/list` → `tools/call` flow (results now also need `resultType`, and `tools/list` results `ttlMs`/`cacheScope`), JSON Schema tool inputs, and the `isError` rule. Details: [TUTORIAL.md → What changed in 2026-07-28](./TUTORIAL.md#what-changed-in-2026-07-28).
+
 ## Files
 
 - [`mcp-server.mjs`](./mcp-server.mjs) — the server: `initialize` · `tools/list` · `tools/call`, with two demo tools.
@@ -43,8 +51,9 @@ Two things worth internalizing:
 ## Where to go next
 
 - Add a tool that does real work (read a file, hit an API) — the shape stays identical.
-- Swap the stdio transport for HTTP/SSE — only the read/write layer changes; the JSON-RPC messages don't.
-- Point a real MCP host (an agent app) at `mcp-server.mjs` — it will speak exactly these messages.
+- Serve it over HTTP instead of stdio — use the Streamable HTTP transport; the older HTTP+SSE transport is deprecated.
+- Point a real MCP host (an agent app) at `mcp-server.mjs` — a host that still supports legacy revisions will fall back to exactly these messages.
+- Make it dual-era: keep the `initialize` flow for legacy clients, and add `server/discover` plus the modern per-request rules for the rest ([what changed](./TUTORIAL.md#what-changed-in-2026-07-28)).
 
 ---
 

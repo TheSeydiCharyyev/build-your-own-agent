@@ -2,7 +2,8 @@
 //
 // The other half: a minimal MCP client. It spawns the server as a child
 // process, does the initialize handshake, lists the tools, and calls two of
-// them — exactly what an agent host does before handing tools to a model.
+// them — what an agent host does with a legacy (MCP 2024-11-05) server before
+// handing tools to a model. Revision 2026-07-28 drops the handshake; see TUTORIAL.md.
 
 import { spawn } from 'node:child_process';
 import readline from 'node:readline';

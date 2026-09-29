@@ -10,6 +10,9 @@
 //   tools/call   → run a tool and return its result
 //
 // That's the whole "magic." Run it via mcp-client.mjs, which spawns this file.
+//
+// This speaks MCP 2024-11-05 (legacy, handshake-based). Revision 2026-07-28
+// drops `initialize` and requires `server/discover` — see TUTORIAL.md.
 
 import process from 'node:process';
 import readline from 'node:readline';

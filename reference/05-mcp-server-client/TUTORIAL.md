@@ -4,6 +4,8 @@ You will build a working [Model Context Protocol](https://modelcontextprotocol.i
 
 **What MCP actually is:** JSON-RPC 2.0 messages, one per line, over stdin/stdout. A server needs exactly three methods for an agent to discover and use tools: `initialize`, `tools/list`, `tools/call`. That's the whole "magic."
 
+> **Protocol revision:** you will build MCP `2024-11-05`, one of the handshake-based revisions the spec now calls *legacy* (`2025-11-25` and earlier). The `2026-07-28` revision removed the `initialize` handshake; [the last section](#what-changed-in-2026-07-28) lists what changed and what stays the same.
+
 Requirements: Node 18+. Nothing else.
 
 ---
@@ -193,7 +195,7 @@ The `pending` map is the heart of every JSON-RPC client ever written: requests g
 
 ## Step 6 — Handshake, discover, call
 
-Append the actual conversation — the exact sequence every agent host performs before handing tools to a model:
+Append the actual conversation — the sequence an agent host performs on a legacy-revision server before handing tools to a model:
 
 ```js
 // 1. Handshake.
@@ -237,7 +239,19 @@ reverse("agent") -> tnega
 
 ## What you built, and what real implementations add
 
-You now have the complete tool-serving core of MCP: framing, handshake, discovery, invocation, and the error-as-data rule. Production servers and SDKs add, in rough order of importance: **resources** and **prompts** (two more capability namespaces alongside tools), the Streamable HTTP transport for remote servers, protocol-revision negotiation beyond a single hardcoded date, cancellation, and progress notifications. All of them ride on exactly the message shapes you just wrote by hand.
+You now have the complete tool-serving core of MCP's legacy (handshake-based) revisions: framing, handshake, discovery, invocation, and the error-as-data rule. Production servers and SDKs add, in rough order of importance: **resources** and **prompts** (two more capability namespaces alongside tools), the Streamable HTTP transport for remote servers, protocol-revision negotiation beyond a single hardcoded date, cancellation, and progress notifications. All of them ride on the same JSON-RPC request, response, and notification shapes you just wrote by hand; the next section covers what `2026-07-28` changed inside them.
+
+## What changed in 2026-07-28
+
+The [`2026-07-28` revision](https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/docs/specification/2026-07-28/changelog.mdx) made MCP stateless. For the tool-serving core you built, that means:
+
+- **No handshake.** `initialize` and `notifications/initialized` are gone. Every request carries its protocol version and client capabilities in `_meta` (`io.modelcontextprotocol/protocolVersion`, `io.modelcontextprotocol/clientCapabilities`).
+- **`server/discover` is required.** Servers must implement it to advertise their supported versions, capabilities, and identity. On stdio, clients may call it first — or use it as a probe to tell a modern server from a legacy one.
+- **Results carry more fields.** Every result has a `resultType` (`"complete"` for ordinary results), and `tools/list` results also carry the cache hints `ttlMs` and `cacheScope`.
+
+What stays: newline-delimited JSON-RPC over stdio, discovery with `tools/list` and invocation with `tools/call`, JSON Schema tool inputs, and the `isError` rule from Step 4 — tool failures still come back as a normal result, not a protocol error.
+
+Compatibility: a client that supports both eras probes this server with `server/discover`, gets `method not found`, and falls back to `initialize`, so your server still works with it. A client that speaks only modern revisions fails against it. To serve both, keep the `initialize` branch for legacy clients and add `server/discover` plus the per-request rules above — the spec allows one server to implement both behaviors.
 
 ---
 
