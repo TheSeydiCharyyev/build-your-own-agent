@@ -122,8 +122,8 @@ The Model Context Protocol from first principles — a minimal server and client
   - [MCP on the Wire: JSON-RPC 2.0 in Go](https://imti.co/mcp-json-rpc/) — Craig Johnston · message-by-message series that hand-builds the JSON-RPC wire layer, then initialize + tools/list with full wire captures.
   - [Understanding MCP Through Raw STDIO Communication](https://foojay.io/today/understanding-mcp-through-raw-stdio-communication/) — David Parry · Java-stdlib-only server: newline framing, routing, and the full initialize → tools/list → tools/call flow.
   - [Writing an MCP Server in Python Without the SDK](https://sesen.ai/blog/mcp-server-python-without-the-sdk) — Berkan Sesen · hand-written Python server and client with standard-library-only protocol code, checked against the official SDK — and why a handshake server cannot answer `initialize` with `2026-07-28`.
-- **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`) · [build it yourself, step by step](reference/05-mcp-server-client/TUTORIAL.md).
-- **What you learn:** transport, tool/resource exposure, and the `initialize` handshake agents use to discover capabilities — the flow of MCP revisions up to `2025-11-25`; the reference code speaks `2024-11-05`, and its tutorial also [explains what `2026-07-28` changed](reference/05-mcp-server-client/TUTORIAL.md#what-changed-in-2026-07-28).
+- **Reference implementation:** ⭐ [**`reference/05-mcp-server-client/`**](reference/05-mcp-server-client/) — a working dual-era MCP server + client over stdio JSON-RPC, no SDK (`node mcp-client.mjs`) · [build it yourself, step by step](reference/05-mcp-server-client/TUTORIAL.md).
+- **What you learn:** transport, tool/resource exposure, and both ways a client discovers a server — the `initialize` handshake of legacy revisions (`2025-11-25` and earlier) and the stateless `server/discover` of [`2026-07-28`](reference/05-mcp-server-client/TUTORIAL.md#step-7--speak-2026-07-28-too-a-dual-era-server-and-client); the reference code speaks both.
 
 ## 6. Coding agent
 

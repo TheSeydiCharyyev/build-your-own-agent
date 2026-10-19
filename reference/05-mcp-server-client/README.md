@@ -1,59 +1,64 @@
 # §5 — MCP server + client (reference implementation)
 
-The Model Context Protocol, from first principles — a working server **and** client in ~200 lines total, no SDK.
+The Model Context Protocol, from first principles — a working server **and** client in ~190 lines of code, no SDK.
 
-MCP has a reputation for being mysterious. It isn't: it's **JSON-RPC 2.0 sent as newline-delimited JSON over stdin/stdout.** Strip the SDK away and the whole "protocol" an agent needs is three calls.
+MCP has a reputation for being mysterious. It isn't: it's **JSON-RPC 2.0 sent as newline-delimited JSON over stdin/stdout.** Strip the SDK away and the whole "protocol" an agent needs is three calls: one for discovery, plus `tools/list` and `tools/call`.
 
-> **Protocol revision:** this code speaks MCP `2024-11-05`, one of the handshake-based revisions the spec now calls *legacy*. The `2026-07-28` revision removed the `initialize` handshake — see [Which revision this is](#which-revision-this-is).
+> **Protocol revisions:** both files are *dual-era*. They speak the legacy `2024-11-05` revision, which opens with the `initialize` handshake, and the stateless `2026-07-28` revision, which has no handshake — see [Two eras, one server](#two-eras-one-server).
 
 **Want to build it yourself instead of reading it?** [TUTORIAL.md](./TUTORIAL.md) walks the whole thing step by step, from an empty file.
 
 ## Run it
 
 ```bash
-node mcp-client.mjs
+node mcp-client.mjs            # modern: probes with server/discover
+node mcp-client.mjs --legacy   # legacy: the initialize handshake
 ```
 
-The client spawns the server, does the handshake, and calls two tools:
+The client spawns the server, finds out which era it speaks, and calls two tools:
 
 ```
-initialized with: { name: 'byoa-mini-mcp', version: '0.1.0' }
+modern (2026-07-28): { name: 'byoa-mini-mcp', version: '0.2.0' }
 tools: add, reverse
 add(2, 3) -> 5
 reverse("agent") -> tnega
 ```
 
-## The whole protocol (that a tool server needs, revision `2024-11-05`)
+With `--legacy`, the first line is `legacy (2024-11-05): { name: 'byoa-mini-mcp', version: '0.2.0' }`; the rest is the same.
 
-| Call | Direction | Purpose |
-|------|-----------|---------|
-| `initialize` | client → server | agree on protocol version + advertise capabilities |
-| `notifications/initialized` | client → server | a notification (no `id`, no reply) — "handshake done" |
-| `tools/list` | client → server | server returns each tool's name + JSON `inputSchema` |
-| `tools/call` | client → server | run a named tool with arguments, get content blocks back |
+## The whole protocol (that a tool server needs)
 
-Two things worth internalizing:
+| Call | Era | Purpose |
+|------|-----|---------|
+| `initialize` | legacy | agree on protocol version + advertise capabilities, once per process |
+| `notifications/initialized` | legacy | a notification (no `id`, no reply) — "handshake done" |
+| `server/discover` | modern | server returns its supported versions, capabilities, and identity |
+| `tools/list` | both | server returns each tool's name + JSON `inputSchema` |
+| `tools/call` | both | run a named tool with arguments, get content blocks back |
+
+Every call goes client → server. Two things worth internalizing:
 
 - **A message with no `id` is a notification** — the server must not reply to it. Requests have an `id`; the client matches each response back to its request by that `id`.
 - **A tool *failing* is not a protocol error.** Errors from the tool come back inside the normal result with `isError: true`, so the model can see the failure and react. Protocol errors (`error` field) are reserved for "bad method / bad params."
 
-## Which revision this is
+## Two eras, one server
 
-The spec splits revisions into two eras. **Legacy** revisions (`2025-11-25` and earlier) open with the `initialize` handshake shown above. **Modern** revisions (`2026-07-28` and later) have no handshake: every request carries its protocol version and client capabilities in `_meta`, and servers must implement `server/discover` to advertise versions, capabilities, and identity.
+The spec splits revisions into two eras. **Legacy** revisions (`2025-11-25` and earlier) open with the `initialize` handshake. **Modern** revisions (`2026-07-28` and later) have no handshake: every request carries its protocol version and client capabilities in `_meta`, servers must implement `server/discover`, and every result carries a `resultType` (lists also carry the cache hints `ttlMs` and `cacheScope`).
 
-This server is legacy-only. A client that supports both eras probes with `server/discover`, gets `method not found`, and falls back to `initialize` — so it still works. A client that speaks only modern revisions fails against it. The parts that carry over: newline-delimited JSON-RPC over stdio, the `tools/list` → `tools/call` flow (results now also need `resultType`, and `tools/list` results `ttlMs`/`cacheScope`), JSON Schema tool inputs, and the `isError` rule. Details: [TUTORIAL.md → What changed in 2026-07-28](./TUTORIAL.md#what-changed-in-2026-07-28).
+The server picks the era per request. A request with a protocol version in `_meta` is served the modern way; `initialize` switches the process to legacy rules; a request with neither is rejected with `-32602`. The client does what the spec asks of a dual-era client: it probes with `server/discover` and falls back to `initialize` on any error that isn't a modern one.
+
+Checked in October 2026 against the official SDK clients in each of their negotiation modes: TypeScript `@modelcontextprotocol/client` 2.3.1 and `@modelcontextprotocol/sdk` 1.32.1, and Python `mcp` 2.3.0. Details: [TUTORIAL.md → Step 7](./TUTORIAL.md#step-7--speak-2026-07-28-too-a-dual-era-server-and-client).
 
 ## Files
 
-- [`mcp-server.mjs`](./mcp-server.mjs) — the server: `initialize` · `tools/list` · `tools/call`, with two demo tools.
-- [`mcp-client.mjs`](./mcp-client.mjs) — the client: spawn, handshake, discover, call.
+- [`mcp-server.mjs`](./mcp-server.mjs) — the server: `initialize` and `server/discover` in front of one shared `tools/list` · `tools/call` core, with two demo tools.
+- [`mcp-client.mjs`](./mcp-client.mjs) — the client: spawn, probe or handshake, discover tools, call.
 
 ## Where to go next
 
 - Add a tool that does real work (read a file, hit an API) — the shape stays identical.
 - Serve it over HTTP instead of stdio — use the Streamable HTTP transport; the older HTTP+SSE transport is deprecated.
-- Point a real MCP host (an agent app) at `mcp-server.mjs` — a host that still supports legacy revisions will fall back to exactly these messages.
-- Make it dual-era: keep the `initialize` flow for legacy clients, and add `server/discover` plus the modern per-request rules for the rest ([what changed](./TUTORIAL.md#what-changed-in-2026-07-28)).
+- Point a real MCP host (an agent app) at `mcp-server.mjs` — it will speak one of the two flows above, depending on which eras the host supports.
 
 ---
 
