@@ -52,7 +52,7 @@ Four load-bearing decisions, one per clause:
 
 1. **The model is a parameter.** It's any function of `{ messages, tools }` that returns `{ toolCalls: [...] }` or `{ done: true, text }`. This one signature is why the rest of the tutorial can swap a scripted mock for a live LLM without touching the loop.
 2. **`maxSteps` caps the loop.** An agent without a step budget is an infinite loop with a credit card.
-3. **Tool failures are data, not crashes.** The `try/catch` turns a thrown error into a result string the model sees on the next turn — so it can react: retry, fix the path, change approach. MCP encodes the same idea as `isError`. Without this, one `ENOENT` kills the whole run.
+3. **Tool failures are data, not crashes.** The `try/catch` turns a thrown error into a result string the model sees on the next turn — so it can react: retry, fix the path, change approach. MCP encodes the same idea as `isError`. Without this, one `ENOENT` kills the whole run. One caveat: "retry" is only safe when a failure means nothing happened. A tool with side effects can fail *after* its effect landed — `run_shell` reports an error on a non-zero exit even if the command already changed files — so a real agent makes such tools idempotent (check state before re-running, or pass an idempotency key) or asks a human before retrying them.
 4. **The transcript is the state.** Every call and every result is appended to `messages`. The model is stateless; the transcript is the agent's memory.
 
 ## Step 2 — The hands: file tools with schemas
