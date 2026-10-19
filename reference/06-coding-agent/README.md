@@ -37,7 +37,7 @@ final: Created greet.txt and verified its contents: "hello from byoa"
 
 A model is any function that takes `messages` + `tools` and returns either `{ toolCalls: [{ name, args }] }` or `{ done: true, text }`. **`agent.mjs` does not change** — that separation is the whole point.
 
-[`real-model.mjs`](./real-model.mjs) is the shipped example: ~50 lines of `fetch` against the Anthropic Messages API, zero dependencies. It shows the two translations every provider adapter is made of — your transcript into the provider's message format (tool calls and results as content blocks tied together by id), and the provider's response back into the loop's contract. Swap the URL, headers, and field names to target any other provider.
+[`real-model.mjs`](./real-model.mjs) is the shipped example: ~85 lines of `fetch`-based code against the Anthropic Messages API, zero dependencies. It shows the two translations every provider adapter is made of — your transcript into the provider's message format (tool calls and results as content blocks tied together by id, each assistant turn sent back unchanged, all of a turn's results in one message), and the provider's response back into the loop's contract. Swap the URL, headers, and field names to target any other provider.
 
 ## Two things to notice
 

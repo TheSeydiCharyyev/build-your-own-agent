@@ -198,38 +198,56 @@ final: Created greet.txt and verified its contents: "hello from byoa"
 
 Create `real-model.mjs` — the same contract, backed by a live LLM. No SDK, so the wire format stays visible. Every provider adapter ever written is these two translations:
 
-**Translation 1: your transcript → the provider's message format.** The Anthropic Messages API represents a tool call as a `tool_use` content block in an assistant message, and its result as a `tool_result` block in a user message, tied together by `id`:
+**Translation 1: your transcript → the provider's message format.** The Anthropic Messages API represents a tool call as a `tool_use` content block in an assistant message, and its result as a `tool_result` block in a user message, tied together by `id`. Two rules shape the code:
+
+- **The assistant turn goes back unchanged.** Current models return `thinking` blocks before their tool calls, and the API rejects a turn whose thinking blocks were dropped, edited, or reordered. So don't rebuild the turn from the tool calls — send back exactly what the API returned.
+- **All results for one turn go in one user message.** When the model asks for several tools at once, each `tool_result` names its `tool_use` by id, and they travel together. Splitting them across messages teaches the model to stop making parallel calls.
+
+Step 1's loop records one `assistant {toolCall}` + `tool {content}` pair per call, so the adapter regroups the pairs into whole turns:
 
 ```js
 function toApiMessages(messages) {
   const out = [];
-  let lastToolUseId;
+  let turn; // content of the assistant turn being answered
+  let results = []; // its tool_result blocks, collected until the turn ends
+  let callId;
+
+  const flush = () => {
+    if (results.length) out.push({ role: 'user', content: results });
+    results = [];
+  };
+
   for (const m of messages) {
     if (m.role === 'user') {
+      flush();
       out.push({ role: 'user', content: m.content });
     } else if (m.role === 'assistant' && m.toolCall) {
-      lastToolUseId = m.toolCall.id;
-      out.push({
-        role: 'assistant',
-        content: [{ type: 'tool_use', id: m.toolCall.id, name: m.toolCall.name, input: m.toolCall.args || {} }],
-      });
+      callId = m.toolCall.id;
+      // A call from another model has no `turn`: rebuild its tool_use block.
+      const content = m.toolCall.turn ?? [
+        { type: 'tool_use', id: callId, name: m.toolCall.name, input: m.toolCall.args || {} },
+      ];
+      if (content !== turn) {
+        // First call of a new turn; later calls share the same `turn` array.
+        flush();
+        out.push({ role: 'assistant', content });
+        turn = content;
+      }
     } else if (m.role === 'tool') {
-      out.push({
-        role: 'user',
-        content: [{
-          type: 'tool_result',
-          tool_use_id: lastToolUseId,
-          content: m.content,
-          is_error: m.content.startsWith('error:') || undefined,
-        }],
+      results.push({
+        type: 'tool_result',
+        tool_use_id: callId, // agent.mjs records each result right after its call
+        content: m.content,
+        is_error: m.content.startsWith('error:') || undefined,
       });
     }
   }
+  flush();
   return out;
 }
 ```
 
-**Translation 2: the provider's response → the loop's contract.** `stop_reason: "tool_use"` means "run these and come back"; anything else means done:
+**Translation 2: the provider's response → the loop's contract.** `stop_reason: "tool_use"` means "run these and come back". `refusal` and `max_tokens` mean the turn may have stopped in the middle of a tool call, so it must not run. Anything else means done:
 
 ```js
 const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -240,8 +258,8 @@ const res = await fetch('https://api.anthropic.com/v1/messages', {
     'anthropic-version': '2023-06-01',
   },
   body: JSON.stringify({
-    model: 'claude-opus-4-8',
-    max_tokens: 8192,
+    model: 'claude-opus-5-5',
+    max_tokens: 16000, // thinking counts toward it, so leave room
     tools: Object.entries(tools).map(([name, t]) => ({
       name, description: t.description, input_schema: t.inputSchema,
     })),
@@ -250,17 +268,24 @@ const res = await fetch('https://api.anthropic.com/v1/messages', {
 });
 const msg = await res.json();
 
+if (msg.stop_reason === 'refusal' || msg.stop_reason === 'max_tokens') {
+  throw new Error(`model stopped early: ${msg.stop_reason}`);
+}
 if (msg.stop_reason === 'tool_use') {
   return {
     toolCalls: msg.content
       .filter((b) => b.type === 'tool_use')
-      .map((b) => ({ id: b.id, name: b.name, args: b.input })),
+      .map((b) => ({ id: b.id, name: b.name, args: b.input, turn: msg.content })),
   };
 }
 return { done: true, text: msg.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n') };
 ```
 
-Two subtleties that bite everyone the first time: the API's field is `input_schema` (snake_case) while yours is `inputSchema`, and the `id` on each `tool_use` block **must** come back on the matching `tool_result` — which is why Step 1's loop stores the whole `call` object in the transcript: the id rides along for free.
+Three subtleties that bite everyone the first time:
+
+- The API's field is `input_schema` (snake_case), while yours is `inputSchema`.
+- The `id` on each `tool_use` block **must** come back on the matching `tool_result`. Each call also carries `turn`, the assistant's whole content as returned. Step 1's loop stores the `call` object as-is, so both ride along for free.
+- Keep the transcript **append-only**. Current models can check that the conversation before a thinking block is unchanged, so editing or dropping an earlier message can get the next request rejected. The adapter rebuilds the same `messages` from the same transcript every time, so each request starts with the previous one, byte for byte.
 
 **Checkpoint** — the same task, a real model, and `agent.mjs` unchanged:
 
