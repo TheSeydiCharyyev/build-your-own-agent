@@ -23,9 +23,16 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-      - name: "MCP server + client (§5)"
+      - name: "MCP server + client (§5), modern era"
         run: |
-          node reference/05-mcp-server-client/mcp-client.mjs | grep -F "add(2, 3) -> 5"
+          node reference/05-mcp-server-client/mcp-client.mjs > mcp-modern.txt
+          grep -F "modern (2026-07-28)" mcp-modern.txt
+          grep -F "add(2, 3) -> 5" mcp-modern.txt
+      - name: "MCP server + client (§5), legacy era"
+        run: |
+          node reference/05-mcp-server-client/mcp-client.mjs --legacy > mcp-legacy.txt
+          grep -F "legacy (2024-11-05)" mcp-legacy.txt
+          grep -F "add(2, 3) -> 5" mcp-legacy.txt
       - name: "Coding agent (§6)"
         run: |
           node reference/06-coding-agent/example.mjs | grep -F "final: Created greet.txt"
